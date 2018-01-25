@@ -1,11 +1,13 @@
 package net.backwings.cinex.Adapter;
 
 import android.content.Context;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -29,7 +31,7 @@ public class ViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private Context mContext;
     private final String TAG= this.getClass().getSimpleName();
 
-    ArrayList<MovieModel> arrayList;
+    private ArrayList<MovieModel> arrayList;
 
 
     public  ViewAdapter(Context mContext, ArrayList<MovieModel> arrayList)
@@ -43,6 +45,12 @@ public class ViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     public int getItemViewType(int position) {
         if ((position + 1) % 4 == 0)
             return 1;
+
+        else if((position + 1)% 2 == 0)
+        {
+            return 3;
+        }
+
         else
             return 2;
     }
@@ -62,9 +70,25 @@ public class ViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                 viewHolder= new ViewHolderLarge(view);
 
             }
+           /* else if(viewType ==3)
+            {
+
+                View view= LayoutInflater.from(mContext).inflate(R.layout.layout_holder_small_middle,parent,false);
+                viewHolder= new ViewHolderSmall(view);
+            }
+             */
             else{
                 View view= LayoutInflater.from(mContext).inflate(R.layout.layout_holder_small,parent,false);
-                viewHolder= new ViewHolderSmall(view);
+                ViewHolderSmall smallHolder= new ViewHolderSmall(view);
+
+
+                if(viewType==3)
+                {
+                    GridLayoutManager.LayoutParams layoutParams= (GridLayoutManager.LayoutParams) smallHolder.getFrameLayout().getLayoutParams();
+                    layoutParams.setMargins(0,layoutParams.topMargin,0,layoutParams.bottomMargin);
+                    smallHolder.getFrameLayout().setLayoutParams(layoutParams);
+                }
+                viewHolder=smallHolder;
 
             }
             return viewHolder;
@@ -89,16 +113,6 @@ public class ViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             MovieModel movieModel= arrayList.get(position);
             switch (getItemViewType(position))
             {
-                case 2:
-                {
-                    ViewHolderSmall viewHolderSmall=(ViewHolderSmall) holder;
-
-                    Glide.with(mContext).load(MovieDatabase.getPosterUrl(movieModel.getPosterPath())).diskCacheStrategy(DiskCacheStrategy.ALL).crossFade().into(viewHolderSmall.getmImageView());
-
-                    viewHolderSmall.getmTitleView().setText(movieModel.getMovieName());
-                    break;
-
-                }
 
                 case 1:
                 {
@@ -108,6 +122,21 @@ public class ViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                     viewHolderLarge.getmTitleView().setText(movieModel.getMovieName());
                     break;
 
+
+                }
+
+                default:
+                {
+                    ViewHolderSmall viewHolderSmall=(ViewHolderSmall) holder;
+
+
+                    Glide.with(mContext).load(MovieDatabase.getPosterUrl(movieModel.getPosterPath())).diskCacheStrategy(DiskCacheStrategy.ALL).crossFade().into(viewHolderSmall.getmImageView());
+
+
+                    viewHolderSmall.getmTitleView().setText(movieModel.getMovieName());
+
+
+                    break;
 
                 }
 
@@ -132,15 +161,17 @@ public class ViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
        return  arrayList.size();
     }
 
-    public class ViewHolderSmall extends RecyclerView.ViewHolder{
+    public static class ViewHolderSmall extends RecyclerView.ViewHolder{
 
         ImageView mImageView;
         TextView mTitleView;
+        FrameLayout frameLayout;
 
-        public ViewHolderSmall(View itemView) {
+        protected ViewHolderSmall(View itemView) {
             super(itemView);
             mImageView= itemView.findViewById(R.id.iv_image);
             mTitleView= itemView.findViewById(R.id.tv_title);
+            frameLayout=itemView.findViewById(R.id.layout_holder_small_cordinator_layout);
 
         }
 
@@ -150,6 +181,9 @@ public class ViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
         public ImageView getmImageView(){
             return mImageView;
+        }
+        public FrameLayout getFrameLayout(){
+            return frameLayout;
         }
 
 
