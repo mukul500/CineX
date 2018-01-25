@@ -2,6 +2,7 @@ package net.backwings.cinex.Adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import net.backwings.cinex.Models.MovieDatabase;
 import net.backwings.cinex.Models.MovieModel;
@@ -25,6 +27,7 @@ import java.util.ArrayList;
 public class ViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private Context mContext;
+    private final String TAG= this.getClass().getSimpleName();
 
     ArrayList<MovieModel> arrayList;
 
@@ -46,19 +49,33 @@ public class ViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        RecyclerView.ViewHolder viewHolder;
-        if(viewType ==1)
+
+
+        try{
+
+
+
+            RecyclerView.ViewHolder viewHolder;
+            if(viewType ==1)
+            {
+                View view= LayoutInflater.from(mContext).inflate(R.layout.layout_holder_large,parent,false);
+                viewHolder= new ViewHolderLarge(view);
+
+            }
+            else{
+                View view= LayoutInflater.from(mContext).inflate(R.layout.layout_holder_small,parent,false);
+                viewHolder= new ViewHolderSmall(view);
+
+            }
+            return viewHolder;
+
+        }
+        catch (Exception e)
         {
-            View view= LayoutInflater.from(mContext).inflate(R.layout.layout_holder_small,parent,false);
-            viewHolder= new ViewHolderSmall(view);
 
+            Log.e(TAG, e+"");
+            return null;
         }
-        else{
-            View view= LayoutInflater.from(mContext).inflate(R.layout.layout_holder_large,parent,false);
-            viewHolder= new ViewHolderLarge(view);
-
-        }
-        return viewHolder;
 
     }
 
@@ -66,38 +83,53 @@ public class ViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
 
-        MovieModel movieModel= arrayList.get(position);
-        switch (getItemViewType(position))
-        {
-            case 2:
+        try{
+
+
+            MovieModel movieModel= arrayList.get(position);
+            switch (getItemViewType(position))
             {
-                ViewHolderSmall viewHolderSmall=(ViewHolderSmall) holder;
+                case 2:
+                {
+                    ViewHolderSmall viewHolderSmall=(ViewHolderSmall) holder;
 
-                Glide.with(mContext).load(MovieDatabase.getPosterUrl(movieModel.getPosterPath())).into(viewHolderSmall.getmImageView());
+                    Glide.with(mContext).load(MovieDatabase.getPosterUrl(movieModel.getPosterPath())).diskCacheStrategy(DiskCacheStrategy.ALL).crossFade().into(viewHolderSmall.getmImageView());
 
-                viewHolderSmall.getmTitleView().setText(movieModel.getMovieName());
-                break;
+                    viewHolderSmall.getmTitleView().setText(movieModel.getMovieName());
+                    break;
+
+                }
+
+                case 1:
+                {
+                    ViewHolderLarge viewHolderLarge= (ViewHolderLarge) holder;
+                    Glide.with(mContext).load(MovieDatabase.getPosterUrl(movieModel.getPosterPath())).into(viewHolderLarge.getmImageView());
+                    viewHolderLarge.getmDescriptionView().setText(movieModel.getOverView());
+                    viewHolderLarge.getmTitleView().setText(movieModel.getMovieName());
+                    break;
+
+
+                }
 
             }
 
-            case 1:
-            {
-                ViewHolderLarge viewHolderLarge= (ViewHolderLarge) holder;
-                Glide.with(mContext).load(MovieDatabase.getPosterUrl(movieModel.getPosterPath())).into(viewHolderLarge.getmImageView());
-                viewHolderLarge.getmDescriptionView().setText(movieModel.getOverView());
-                viewHolderLarge.getmTitleView().setText(movieModel.getMovieName());
-                break;
-
-
-            }
 
         }
+
+        catch (Exception e)
+        {
+            Log.e(TAG,e+"");
+        }
+
+
+
+
 
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+       return  arrayList.size();
     }
 
     public class ViewHolderSmall extends RecyclerView.ViewHolder{

@@ -13,12 +13,8 @@ import net.backwings.cinex.Fragment.MostPopularMovies;
 
 public class PageAdapter extends FragmentPagerAdapter {
 
-    HighestratedMovies mHighestratedMovies;
-    MostPopularMovies mMostPopularMovies;
     public PageAdapter(FragmentManager fm) {
         super(fm);
-        mHighestratedMovies = new HighestratedMovies();
-        mMostPopularMovies = new MostPopularMovies();
     }
 
     @Override
@@ -27,11 +23,11 @@ public class PageAdapter extends FragmentPagerAdapter {
         {
             case 0:
             {
-                return mHighestratedMovies;
+                return new HighestratedMovies();
             }
             default:
             {
-                return mMostPopularMovies;
+                return new MostPopularMovies();
             }
         }
     }

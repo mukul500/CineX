@@ -1,6 +1,7 @@
 package net.backwings.cinex.Utils;
 
 import android.net.Uri;
+import android.util.Log;
 
 import net.backwings.cinex.Models.MovieDatabase;
 
@@ -20,8 +21,10 @@ public final class NetworkUtils {
 
     public static final int POPULAR_MOVIE_URL=0,HIGHEST_RATED_MOVIES_URL=1;
 
+    private static final String TAG= NetworkUtils.class.getSimpleName();
 
-    public static URL getURL(int urlType)
+
+    public URL getURL(int urlType)
     {
 
         Uri.Builder builtUri=null;
@@ -45,13 +48,14 @@ public final class NetworkUtils {
 
         }
         catch (MalformedURLException e) {
+            Log.e(TAG,e+""  );
             e.printStackTrace();
             return null;
         }
 
     }
 
-    public static String getResponseFromUrl(URL url)
+    public  String getResponseFromUrl(URL url)
     {
         StringBuilder mStringBuilderJSON=new StringBuilder();
         InputStream mInputStream;
@@ -71,11 +75,12 @@ public final class NetworkUtils {
                 JSON=mBufferedReader.readLine();
             }
 
-            return JSON;
+            return mStringBuilderJSON.toString();
 
 
 
         } catch (IOException e) {
+            Log.e(TAG,e+""  );
             e.printStackTrace();
             return null;
         }
