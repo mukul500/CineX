@@ -1,13 +1,13 @@
 package net.backwings.cinex.Models;
 
-/**
- * Created by mukul on 1/25/2018.
- */
+import java.io.Serializable;
 
-public class MovieModel {
+
+
+public class MovieModel implements Serializable{
 
     private double id;
-    private String movieName,overView,releaseDate,language,rating,posterPath;
+    private String movieName,overView,releaseDate,language,rating,posterPath,backdropPath;
 
 
 
@@ -36,6 +36,10 @@ public class MovieModel {
         this.rating=rating;
     }
 
+    public void setBackdropPath(String backdropPath){
+        this.backdropPath=backdropPath;
+    }
+
 
     public double getId(){
         return id;
@@ -59,5 +63,9 @@ public class MovieModel {
     public String getPosterPath(){
         return posterPath;
     }
+    public String getBackdropPath(){
+        return backdropPath;
+    }
+
 
 }

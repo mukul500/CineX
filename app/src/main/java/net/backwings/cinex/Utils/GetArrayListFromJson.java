@@ -24,7 +24,7 @@ public final class GetArrayListFromJson {
     {
 
         try {
-            ar=new ArrayList<MovieModel>();
+            ar=new ArrayList<>();
             JSONObject jsonObject= new JSONObject(JSON);
         //    Log.e(TAG, "JSONObject ----> "+jsonObject);
             JSONArray jsonArray= jsonObject.getJSONArray(MovieDatabase.JSON_ARRAY_STRING_PARAM);
@@ -56,6 +56,8 @@ public final class GetArrayListFromJson {
 
                // Log.e(TAG, "<--- Rating Found--->");
                 md.setReleaseDate(jsonObjectMovie.getString(MovieDatabase.JSON_RELEASE_DATE));
+
+                md.setBackdropPath(jsonObjectMovie.getString(MovieDatabase.JSON_BACKDROP_PATH));
 
              //   Log.e(TAG, "<--- Release Found--->" +md.getReleaseDate());
 

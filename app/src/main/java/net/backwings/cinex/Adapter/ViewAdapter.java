@@ -1,6 +1,7 @@
 package net.backwings.cinex.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
+import net.backwings.cinex.Activity.DetailActivity;
 import net.backwings.cinex.Models.MovieDatabase;
 import net.backwings.cinex.Models.MovieModel;
 import net.backwings.cinex.R;
@@ -85,7 +87,7 @@ public class ViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                 if(viewType==3)
                 {
                     GridLayoutManager.LayoutParams layoutParams= (GridLayoutManager.LayoutParams) smallHolder.getFrameLayout().getLayoutParams();
-                    layoutParams.setMargins(0,layoutParams.topMargin,0,layoutParams.bottomMargin);
+                    layoutParams.setMargins(getPx(4),layoutParams.topMargin, getPx(4),0);
                     smallHolder.getFrameLayout().setLayoutParams(layoutParams);
                 }
                 viewHolder=smallHolder;
@@ -110,7 +112,7 @@ public class ViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         try{
 
 
-            MovieModel movieModel= arrayList.get(position);
+            final MovieModel movieModel= arrayList.get(position);
             switch (getItemViewType(position))
             {
 
@@ -120,6 +122,15 @@ public class ViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                     Glide.with(mContext).load(MovieDatabase.getPosterUrl(movieModel.getPosterPath())).into(viewHolderLarge.getmImageView());
                     viewHolderLarge.getmDescriptionView().setText(movieModel.getOverView());
                     viewHolderLarge.getmTitleView().setText(movieModel.getMovieName());
+                    viewHolderLarge.getmImageView().setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent= new Intent(mContext, DetailActivity.class);
+                            intent.putExtra("movieModel", movieModel);
+                            mContext.startActivity(intent);
+                        }
+                    });
+
                     break;
 
 
@@ -134,6 +145,14 @@ public class ViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
 
                     viewHolderSmall.getmTitleView().setText(movieModel.getMovieName());
+                    viewHolderSmall.getmImageView().setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent= new Intent(mContext, DetailActivity.class);
+                            intent.putExtra("movieModel", movieModel);
+                            mContext.startActivity(intent);
+                        }
+                    });
 
 
                     break;
@@ -213,5 +232,14 @@ public class ViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         public ImageView getmImageView(){
             return mImageView;
         }
+    }
+
+    public int getPx(float dp)
+    {
+
+        float density = mContext.getResources().getDisplayMetrics().density;
+        float px = dp * density;
+
+        return Math.round(px);
     }
 }
